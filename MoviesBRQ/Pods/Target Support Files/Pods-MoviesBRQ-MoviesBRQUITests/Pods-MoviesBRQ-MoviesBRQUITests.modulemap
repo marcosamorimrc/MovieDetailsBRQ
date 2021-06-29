@@ -1,0 +1,6 @@
+framework module Pods_MoviesBRQ_MoviesBRQUITests {
+  umbrella header "Pods-MoviesBRQ-MoviesBRQUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
