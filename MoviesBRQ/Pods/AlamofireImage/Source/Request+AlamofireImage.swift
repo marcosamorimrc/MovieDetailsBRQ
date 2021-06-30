@@ -37,25 +37,41 @@ import Cocoa
 public final class ImageResponseSerializer: ResponseSerializer {
     // MARK: Properties
 
-    public static var deviceScreenScale: CGFloat { return DataRequest.imageScale }
+    public static var deviceScreenScale: CGFloat { DataRequest.imageScale }
 
     public let imageScale: CGFloat
     public let inflateResponseImage: Bool
     public let emptyResponseCodes: Set<Int>
     public let emptyRequestMethods: Set<HTTPMethod>
 
-    static var acceptableImageContentTypes: Set<String> = ["application/octet-stream",
-                                                           "image/tiff",
-                                                           "image/jpeg",
-                                                           "image/gif",
-                                                           "image/png",
-                                                           "image/ico",
-                                                           "image/x-icon",
-                                                           "image/bmp",
-                                                           "image/x-bmp",
-                                                           "image/x-xbitmap",
-                                                           "image/x-ms-bmp",
-                                                           "image/x-win-bitmap"]
+    static var acceptableImageContentTypes: Set<String> = {
+        var contentTypes: Set<String> = ["application/octet-stream",
+                                         "image/tiff",
+                                         "image/jpg",
+                                         "image/jpeg",
+                                         "image/jp2",
+                                         "image/gif",
+                                         "image/png",
+                                         "image/ico",
+                                         "image/x-icon",
+                                         "image/bmp",
+                                         "image/x-bmp",
+                                         "image/x-xbitmap",
+                                         "image/x-ms-bmp",
+                                         "image/x-win-bitmap"]
+
+        #if os(macOS) || os(iOS) // No WebP support on tvOS or watchOS.
+        if #available(macOS 11, iOS 14, *) {
+            contentTypes.formUnion(["image/webp"])
+        }
+        #endif
+
+        if #available(macOS 10.13, iOS 11, tvOS 11, watchOS 4, *) {
+            contentTypes.formUnion(["image/heic", "image/heif"])
+        }
+
+        return contentTypes
+    }()
 
     static let streamImageInitialBytePattern = Data([255, 216]) // 0xffd8
 
@@ -186,10 +202,10 @@ extension DataRequest {
                               queue: DispatchQueue = .main,
                               completionHandler: @escaping (AFDataResponse<Image>) -> Void)
         -> Self {
-        return response(queue: queue,
-                        responseSerializer: ImageResponseSerializer(imageScale: imageScale,
-                                                                    inflateResponseImage: inflateResponseImage),
-                        completionHandler: completionHandler)
+        response(queue: queue,
+                 responseSerializer: ImageResponseSerializer(imageScale: imageScale,
+                                                             inflateResponseImage: inflateResponseImage),
+                 completionHandler: completionHandler)
     }
 }
 
@@ -211,9 +227,9 @@ extension DataRequest {
     public func responseImage(queue: DispatchQueue = .main,
                               completionHandler: @escaping (AFDataResponse<Image>) -> Void)
         -> Self {
-        return response(queue: queue,
-                        responseSerializer: ImageResponseSerializer(inflateResponseImage: false),
-                        completionHandler: completionHandler)
+        response(queue: queue,
+                 responseSerializer: ImageResponseSerializer(inflateResponseImage: false),
+                 completionHandler: completionHandler)
     }
 }
 

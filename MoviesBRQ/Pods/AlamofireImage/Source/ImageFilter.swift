@@ -43,7 +43,7 @@ public protocol ImageFilter {
 
 extension ImageFilter {
     /// The unique identifier for any `ImageFilter` type.
-    public var identifier: String { return "\(type(of: self))" }
+    public var identifier: String { "\(type(of: self))" }
 }
 
 // MARK: - Sizable
@@ -110,15 +110,15 @@ public protocol CompositeImageFilter: ImageFilter {
     var filters: [ImageFilter] { get }
 }
 
-public extension CompositeImageFilter {
+extension CompositeImageFilter {
     /// The unique idenitifier for any `CompositeImageFilter` type.
-    var identifier: String {
-        return filters.map { $0.identifier }.joined(separator: "_")
+    public var identifier: String {
+        filters.map { $0.identifier }.joined(separator: "_")
     }
 
     /// The filter closure for any `CompositeImageFilter` type.
-    var filter: (Image) -> Image {
-        return { image in
+    public var filter: (Image) -> Image {
+        { image in
             self.filters.reduce(image) { $1.filter($0) }
         }
     }
@@ -170,7 +170,7 @@ public struct ScaledToSizeFilter: ImageFilter, Sizable {
 
     /// The filter closure used to create the modified representation of the given image.
     public var filter: (Image) -> Image {
-        return { image in
+        { image in
             image.af.imageScaled(to: self.size)
         }
     }
@@ -194,7 +194,7 @@ public struct AspectScaledToFitSizeFilter: ImageFilter, Sizable {
 
     /// The filter closure used to create the modified representation of the given image.
     public var filter: (Image) -> Image {
-        return { image in
+        { image in
             image.af.imageAspectScaled(toFit: self.size)
         }
     }
@@ -219,7 +219,7 @@ public struct AspectScaledToFillSizeFilter: ImageFilter, Sizable {
 
     /// The filter closure used to create the modified representation of the given image.
     public var filter: (Image) -> Image {
-        return { image in
+        { image in
             image.af.imageAspectScaled(toFill: self.size)
         }
     }
@@ -252,7 +252,7 @@ public struct RoundedCornersFilter: ImageFilter, Roundable {
 
     /// The filter closure used to create the modified representation of the given image.
     public var filter: (Image) -> Image {
-        return { image in
+        { image in
             image.af.imageRounded(withCornerRadius: self.radius,
                                   divideRadiusByImageScale: self.divideRadiusByImageScale)
         }
@@ -276,7 +276,7 @@ public struct CircleFilter: ImageFilter {
 
     /// The filter closure used to create the modified representation of the given image.
     public var filter: (Image) -> Image {
-        return { image in
+        { image in
             image.af.imageRoundedIntoCircle()
         }
     }
@@ -287,7 +287,6 @@ public struct CircleFilter: ImageFilter {
 #if os(iOS) || os(tvOS)
 
 /// The `CoreImageFilter` protocol defines `parameters`, `filterName` properties used by CoreImage.
-@available(iOS 9.0, *)
 public protocol CoreImageFilter: ImageFilter {
     /// The filter name of the CoreImage filter.
     var filterName: String { get }
@@ -296,21 +295,19 @@ public protocol CoreImageFilter: ImageFilter {
     var parameters: [String: Any] { get }
 }
 
-@available(iOS 9.0, *)
-public extension ImageFilter where Self: CoreImageFilter {
+extension ImageFilter where Self: CoreImageFilter {
     /// The filter closure used to create the modified representation of the given image.
-    var filter: (Image) -> Image {
-        return { image in
+    public var filter: (Image) -> Image {
+        { image in
             image.af.imageFiltered(withCoreImageFilter: self.filterName, parameters: self.parameters) ?? image
         }
     }
 
     /// The unique idenitifier for an `ImageFilter` conforming to the `CoreImageFilter` protocol.
-    var identifier: String { return "\(type(of: self))-parameters:(\(parameters))" }
+    public var identifier: String { "\(type(of: self))-parameters:(\(parameters))" }
 }
 
 /// Blurs an image using a `CIGaussianBlur` filter with the specified blur radius.
-@available(iOS 9.0, *)
 public struct BlurFilter: ImageFilter, CoreImageFilter {
     /// The filter name.
     public let filterName = "CIGaussianBlur"

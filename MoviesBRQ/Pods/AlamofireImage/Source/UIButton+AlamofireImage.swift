@@ -40,7 +40,7 @@ extension AlamofireExtension where ExtendedType: UIButton {
     /// custom instance image downloader is when images are behind different basic auth credentials.
     public var imageDownloader: ImageDownloader? {
         get {
-            return objc_getAssociatedObject(type, &AssociatedKeys.imageDownloader) as? ImageDownloader
+            objc_getAssociatedObject(type, &AssociatedKeys.imageDownloader) as? ImageDownloader
         }
         nonmutating set {
             objc_setAssociatedObject(type, &AssociatedKeys.imageDownloader, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
@@ -244,7 +244,7 @@ extension AlamofireExtension where ExtendedType: UIButton {
                                                           strongSelf.setImageRequestReceipt(nil, for: state)
 
                                                           completion?(response)
-            })
+                                                      })
 
         setImageRequestReceipt(requestReceipt, for: state)
     }
@@ -413,7 +413,7 @@ extension AlamofireExtension where ExtendedType: UIButton {
                                                           strongSelf.setBackgroundImageRequestReceipt(nil, for: state)
 
                                                           completion?(response)
-            })
+                                                      })
 
         setBackgroundImageRequestReceipt(requestReceipt, for: state)
     }
@@ -487,7 +487,7 @@ extension AlamofireExtension where ExtendedType: UIButton {
     private func urlRequest(with url: URL) -> URLRequest {
         var urlRequest = URLRequest(url: url)
 
-        for mimeType in ImageResponseSerializer.acceptableImageContentTypes {
+        for mimeType in ImageResponseSerializer.acceptableImageContentTypes.sorted() {
             urlRequest.addValue(mimeType, forHTTPHeaderField: "Accept")
         }
 
@@ -500,13 +500,13 @@ extension AlamofireExtension where ExtendedType: UIButton {
 extension UIButton {
     @available(*, deprecated, message: "Replaced by `button.af.imageDownloader`")
     public var af_imageDownloader: ImageDownloader? {
-        get { return af.imageDownloader }
+        get { af.imageDownloader }
         set { af.imageDownloader = newValue }
     }
 
     @available(*, deprecated, message: "Replaced by `button.af.sharedImageDownloader`")
     public class var af_sharedImageDownloader: ImageDownloader {
-        get { return af.sharedImageDownloader }
+        get { af.sharedImageDownloader }
         set { af.sharedImageDownloader = newValue }
     }
 
@@ -607,7 +607,7 @@ extension UIButton {
 
 // MARK: - Private - AssociatedKeys
 
-private struct AssociatedKeys {
+private enum AssociatedKeys {
     static var imageDownloader = "UIButton.af.imageDownloader"
     static var sharedImageDownloader = "UIButton.af.sharedImageDownloader"
     static var imageReceipts = "UIButton.af.imageReceipts"
