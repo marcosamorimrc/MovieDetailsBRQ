@@ -18,6 +18,11 @@ class MovieDetailsInteractor: MovieDetailsPresenterToInteractorProtocol{
                 switch response.result {
                                 case .success(let value):
                                     if let JSON = value as? [String: Any] {
+                                        if let success = JSON["success"] {
+                                            if !(success as! Bool) {
+                                                self.presenter?.movieFetchFailed()
+                                            }
+                                        }
                                         if let movie = MovieDetails.init(object: JSON as NSDictionary){
                                             self.presenter?.movieFetchedSuccess(MovieDetails: movie)
                                         }
@@ -36,6 +41,11 @@ class MovieDetailsInteractor: MovieDetailsPresenterToInteractorProtocol{
                 switch response.result {
                                 case .success(let value):
                                     if let JSON = value as? [String: Any] {
+                                        if let success = JSON["success"] {
+                                            if !(success as! Bool) {
+                                                self.presenter?.movieFetchFailed()
+                                            }
+                                        }
                                         if let arrayMovies = JSON["results"] as? NSArray{
                                             let movieList = NSMutableArray.init()
                                             for movie in arrayMovies {
@@ -58,6 +68,11 @@ class MovieDetailsInteractor: MovieDetailsPresenterToInteractorProtocol{
                 switch response.result {
                                 case .success(let value):
                                     if let JSON = value as? [String: Any] {
+                                        if let success = JSON["success"] {
+                                            if !(success as! Bool) {
+                                                self.presenter?.movieGenresFetchFailed()
+                                            }
+                                        }
                                         if let arrayGenres = JSON["genres"] as? NSArray{
                                             self.presenter?.movieGenresFetchedSuccess(MovieGenresArray: arrayGenres)
                                         }

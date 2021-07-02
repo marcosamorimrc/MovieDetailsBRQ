@@ -36,6 +36,12 @@ class MovieDetailsView: UIViewController, UITableViewDelegate, UITableViewDataSo
         MoviewDetailsTableView.delegate = self
         MoviewDetailsTableView.dataSource = self
         
+        print("contentScrollView.frame")
+        print(contentScrollView.frame)
+        print("imageview.frame")
+        print(MoviePoster.frame)
+
+        
         presenter?.view = self;
         presenter?.fetchMovieInfo()
     }
@@ -104,7 +110,7 @@ class MovieDetailsView: UIViewController, UITableViewDelegate, UITableViewDataSo
         let realeaseYearString = "\(realeaseYear ?? 0)"
         
         //Get movie genres separeted by ", " in a string from GenresArray
-        var tagsArray = NSMutableArray.init()
+        let tagsArray = NSMutableArray.init()
         for tag in movie.genres! {
             for genre in GenresArray {
                 if let genreDict = genre as? NSDictionary{
@@ -165,8 +171,8 @@ extension MovieDetailsView :MovieDetailsPresenterToViewProtocol{
         let url = URL(string: API_MOVIE_IMAGES + movieInfo.backdrop_path!)!
         MoviePoster.af.setImage(withURL: url)
         lblMovieTitle.text = movieInfo.title
-        lblLikes.text = abreviatedNumber(number: movieInfo.vote_count ?? 0) + " likes"
-        lblPopularity.text = "\(movieInfo.popularity ?? 0) views"
+        lblLikes.text = abreviatedNumber(number: movieInfo.vote_count ?? 0) + " Likes"
+        lblPopularity.text = "\(movieInfo.popularity ?? 0) Views"
 
     }
     
@@ -178,7 +184,9 @@ extension MovieDetailsView :MovieDetailsPresenterToViewProtocol{
     }
     
     func showError() {
-//        show alert
+        let alert = UIAlertController(title: "Error", message: "Something went wrong, please try again later.", preferredStyle: UIAlertController.Style.alert)
+        alert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
     }
     
     

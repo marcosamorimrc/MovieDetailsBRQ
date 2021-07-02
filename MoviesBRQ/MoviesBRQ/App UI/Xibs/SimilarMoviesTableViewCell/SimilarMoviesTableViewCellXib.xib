@@ -26,7 +26,7 @@
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="top" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tags" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JM5-TH-GuJ" customClass="TopAlignedLabel" customModule="MoviesBRQ" customModuleProvider="target">
                     <rect key="frame" x="100" y="52" width="294" height="29"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES" flexibleMaxY="YES"/>
-                    <fontDescription key="fontDescription" type="system" weight="thin" pointSize="14"/>
+                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -45,7 +45,7 @@
     </objects>
     <designables>
         <designable name="JM5-TH-GuJ">
-            <size key="intrinsicContentSize" width="30" height="17"/>
+            <size key="intrinsicContentSize" width="30.5" height="17"/>
         </designable>
         <designable name="mYw-oW-Iur">
             <size key="intrinsicContentSize" width="35" height="21.5"/>
