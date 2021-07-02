@@ -36,13 +36,6 @@ class MovieDetailsView: UIViewController, UITableViewDelegate, UITableViewDataSo
         MoviewDetailsTableView.delegate = self
         MoviewDetailsTableView.dataSource = self
         
-        print("contentScrollView.frame")
-        print(contentScrollView.frame)
-        print("imageview.frame")
-        print(MoviePoster.frame)
-
-        
-        presenter?.view = self;
         presenter?.fetchMovieInfo()
     }
     
@@ -92,11 +85,9 @@ class MovieDetailsView: UIViewController, UITableViewDelegate, UITableViewDataSo
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "SimilarMovieCell", for: indexPath) as! SimilarMoviesTableViewCellXib
-
         cell.backgroundColor = .black
         
         let movie = MoviesArray.object(at: indexPath.row) as! MovieDetails
-        
         cell.MovieTitle.text = movie.title
         
         //Get release year from release_date
@@ -125,6 +116,7 @@ class MovieDetailsView: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
         let tagsArrayString: [String] = tagsArray as! [String]
         
+        //Make MovieTags Label text have two fonts: normal for the release year and light for the genres
         let boldText = realeaseYearString
         let attrs = [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14)]
         let attributedString = NSMutableAttributedString(string:boldText, attributes:attrs)
@@ -133,14 +125,15 @@ class MovieDetailsView: UIViewController, UITableViewDelegate, UITableViewDataSo
         let normalString = NSMutableAttributedString(string:normalText)
 
         attributedString.append(normalString)
-        
         cell.MovieTags.attributedText = attributedString
         
+        //Load Movie Poster
         if let poster_path = movie.poster_path{
-            let url = URL(string: "\(API_MOVIE_IMAGES)\(poster_path)")!
+            let url = URL(string: "\(URL_API_MOVIE_IMAGES)\(poster_path)")!
             cell.MoviePoster.af.setImage(withURL: url)
         }
 
+        //Change background selected color
         let bgColorView = UIView()
         bgColorView.backgroundColor = UIColor(white: 0.2, alpha: 1)
         cell.selectedBackgroundView = bgColorView
@@ -168,19 +161,17 @@ extension MovieDetailsView :MovieDetailsPresenterToViewProtocol{
     
     func showInfo(movieInfo: MovieDetails) {
         
-        let url = URL(string: API_MOVIE_IMAGES + movieInfo.backdrop_path!)!
+        let url = URL(string: URL_API_MOVIE_IMAGES + movieInfo.backdrop_path!)!
         MoviePoster.af.setImage(withURL: url)
         lblMovieTitle.text = movieInfo.title
         lblLikes.text = abreviatedNumber(number: movieInfo.vote_count ?? 0) + " Likes"
         lblPopularity.text = "\(movieInfo.popularity ?? 0) Views"
-
     }
     
     func showSimilar(movieArray: Array<MovieDetails>) {
         
         MoviesArray.addObjects(from: movieArray)
         presenter?.fetchMovieGenres()
-        
     }
     
     func showError() {

@@ -7,10 +7,13 @@
 
 import Foundation
 
-let API_KEY:String = "?api_key=7c020a6c6fc4a78723f6b720ff55ae08"
+//Get API_KEY from TMDB.plist
+let path = Bundle.main.path(forResource: "TMDB", ofType: "plist")
+let plist = NSDictionary(contentsOfFile: path!)
+let API_KEY:String = "?api_key=" + (plist?.object(forKey: "API_KEY") as? String)!
 
-let API_MOVIE_DETAILS:String = "https://api.themoviedb.org/3/movie/600354\(API_KEY)"
-let API_MOVIE_SIMILAR:String = "https://api.themoviedb.org/3/movie/600354/similar\(API_KEY)"
-let API_MOVIE_IMAGES:String = "https://image.tmdb.org/t/p/w500/"
-let API_MOVIE_GENRES:String = "https://api.themoviedb.org/3/genre/movie/list\(API_KEY)"
+let URL_API_MOVIE_DETAILS:String = "https://api.themoviedb.org/3/movie/600354\(API_KEY)"
+let URL_API_MOVIE_SIMILAR:String = "https://api.themoviedb.org/3/movie/600354/similar\(API_KEY)"
+let URL_API_MOVIE_IMAGES:String = "https://image.tmdb.org/t/p/w500/"
+let URL_API_MOVIE_GENRES:String = "https://api.themoviedb.org/3/genre/movie/list\(API_KEY)"
 
